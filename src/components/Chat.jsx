@@ -27,8 +27,6 @@ import Group from './Group';
 import AddGroup from './AddGroup';
 import NewGroupLayout from './NewGroupLayout';
 
-// import  from '@heroicons/react'
-
 function Chat({ username }) {
     // conncet to websocket server
     const [ws, setWs] = useState(null);
@@ -44,12 +42,7 @@ function Chat({ username }) {
 
     const { selectedUserId, setSelectedUserId, currentGroupMembers, setCurrentGroupMembers } = useContext(UserContext);
     const { selectedUsername, setSelectedUsername, profilePhoto, selectedUserPhoto, setSelectedUserPhoto } = useContext(UserContext)
-    // const {activeStatus, setActiveStatus} = useContext(UserContext);
-
-    // setActiveStatus,
-    // activeStatus,
-    // setActiveNowVisible,
-    // activeNowVisible,
+    
     const [pickerVisible, setPickerVisible] = useState(false);
     const { activeNowVisible, setActiveNowVisible } = useContext(UserContext)
     // const [chatVisible, setChatVisible] = useState(false);
@@ -74,7 +67,7 @@ function Chat({ username }) {
     }
     const displayState = { chatVisible: false, settingVisible: false };
     const [state, dispatch] = useReducer(reducer, displayState);
-    // console.log("web soket is ", ws);
+
     // set the new message state
     const [newMessageText, setNewMessageText] = useState(defaultEmoji);
 
@@ -84,14 +77,12 @@ function Chat({ username }) {
         setCurrentUserId,
         setCurrentUsername } = useContext(UserContext);
 
-    // set the sended messages states 
-    // messages is an array of objects
+    // set the sent messages states 
+    // messages are an array of objects
     const [messages, setMessages] = useState([]);
 
-    // refrence on the scrolled container of messages
+    // reference on the scrolled container of messages
     const divUnderMessages = useRef();
-
-    // console.log("current user is", currentUser, "currentUserId", currentUserId);
 
     useEffect(() => {
         connecToWSS();
@@ -99,16 +90,20 @@ function Chat({ username }) {
     }, [selectedUserId]);
 
     function connecToWSS() {
-        const ws = new WebSocket(`wss://${import.meta.env.VITE_SERVER_URL}`) // connected to websocket server
-        setWs(ws);
+        try {
+            const ws = new WebSocket(`wss://${import.meta.env.VITE_SERVER_URL}`) // connected to websocket server
+            setWs(ws);
 
-        ws.addEventListener('message', (e) => handleMessage(e));
-        ws.addEventListener('close', () => {
-            setTimeout(() => {
-                console.log("Disconected. try to reconnect again by %s", username);
-                connecToWSS()
-            }, 1000);
-        })
+            ws.addEventListener('message', (e) => handleMessage(e));
+            ws.addEventListener('close', () => {
+                setTimeout(() => {
+                    console.log("Disconected. try to reconnect again by %s", username);
+                    connecToWSS()
+                }, 1000);
+            })
+        }catch(err) {
+            console.log("Error: %s", err);
+        }
     }
 
     const showOnlinePeople = (online) => {
@@ -117,13 +112,10 @@ function Chat({ username }) {
 
         online.forEach(({ username, userId, activeStatus, profilePicture }) => {
             people[userId] = { username, activeStatus, profilePicture };
-            // people[username] = activeStatus
-
         });
 
         console.log("online people", people);
         setOnlinePople(people);
-        // console.log("online clints", people);
     }
 
     function handleMessage(event) {
@@ -159,11 +151,6 @@ function Chat({ username }) {
 
         // we will send the message to the wss
         // send the message and also send the user information of the selected user (the destination of the message)
-
-        // if (newMessageText === "") {
-        //     console.log(defaultEmoji);
-        //     // setNewMessageText(defaultEmoji);
-        // }
         ws.send(JSON.stringify({
             message: {
                 recipient: selectedUserId, //the selected userId
@@ -227,8 +214,6 @@ function Chat({ username }) {
     useEffect(() => {
         axios.get(`/groups/${currentUserId}`).then((res) => {
 
-            
-            // const {groups: groupSet} = res.data;
             console.log("user groups is ", res.data.groups);
             setGroups(res.data.groups)
             console.log("groups inside state is ", groups);
@@ -237,7 +222,6 @@ function Chat({ username }) {
     }, [currentUserId])
 
     // call an Api to specify the online People when the online people state will change
-
     useEffect(() => {
         /**
          * fetch all the people from the database 
@@ -246,7 +230,8 @@ function Chat({ username }) {
          * **/
         axios.get('/people').then(res => {
             const { data } = res;
-            const offlinePeopleArray = data.filter(user => user._id !== currentUserId).filter(user => !Object.keys(onlinePeople).includes(user._id));
+            const offlinePeopleArray = data.filter(user => user._id !== currentUserId)
+            .filter(user => !Object.keys(onlinePeople).includes(user._id));
             console.log("all users", data);
 
             // setOfflinePeople(offlinePeopleArray)
@@ -287,10 +272,6 @@ function Chat({ username }) {
     }, [selectedUserId]);
 
 
-
-
-
-
     const onEmojiSelect = (event) => {
         console.log(event.native);
         setNewMessageText(state => state + " " + event.native)
@@ -312,7 +293,7 @@ function Chat({ username }) {
         <>
             {/* <h1>Welcome {username} Chat Here</h1> */}
             <div className="flex h-screen overflow-hidden">
-                <div className="w-1/3 bg-white flex flex-col relative" /** flex flex-col justify-between align-top**/>
+                <div className="w-1/3 bg-white flex flex-col relative">
 
                     <div className='flex-grow overflow-auto'>
                         <Logo />
@@ -534,9 +515,6 @@ function Chat({ username }) {
                         {/* <Picker  pickerStyle={{width: '100%'}}></Picker> */}
                         {pickerVisible && <Picker className=" m-4" data={data} previewPosition='none' onEmojiSelect={onEmojiSelect}></Picker>}
                     </div>)}
-
-
-
 
                 </div>
 

@@ -6,13 +6,13 @@ function RegisterAndLoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoginedOrRegisterd, setIsLoginedOrRegisterd] = useState('Login')
-  // console.log(username, password);
 
-  const { setCurrentUsername, setCurrentUserId,  setActiveStatus, setActiveNowVisible, setProfilePhoto, currentUserId } = useContext(UserContext)
+  const { setCurrentUsername, setCurrentUserId,  setActiveStatus,
+     setActiveNowVisible, setProfilePhoto, currentUserId } = useContext(UserContext)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const URL = (isLoginedOrRegisterd == 'Register')? '/register':  '/login';
+    const URL = (isLoginedOrRegisterd == 'Register') ? '/register' : '/login';
    
     const { data } = await axios.post(URL, { username, password });
     console.log(data);

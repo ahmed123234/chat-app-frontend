@@ -30,7 +30,7 @@ const Group = forwardRef(({ settingSelected, setSettingSelected }, ref)  => {
         
             userId: currentUserId,
             username: currentUsername,
-            profilePicture: profilePhoto.substring(`${axios.defaults.baseURL}/uploads/profile_pictures/`.length),
+            profilePicture: profilePhoto && profilePhoto.substring(`${axios.defaults.baseURL}/uploads/profile_pictures/`.length),
             activeStatus
     }]);
 

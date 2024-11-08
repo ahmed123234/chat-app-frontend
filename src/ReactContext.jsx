@@ -4,7 +4,7 @@
  */
 
 import axios from "axios";
-import { createContext, useEffect, useReducer, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 
 export const UserContext = createContext({}); // the context initial value is null
@@ -41,7 +41,7 @@ export function UserContextProvider({children}) {
             console.log("user details", {currentUserId, currentUsername, activeStatus, activeNowVisible, profilePhoto});
         })
 
-    })
+    }, [])
 
     // useEffect(() => {
     //     axios.get(`/groups/${currentUserId}`).then(({ data }) => { 
@@ -53,7 +53,7 @@ export function UserContextProvider({children}) {
     // }, [currentUserId])
     
     return (
-        //
+        
         <UserContext.Provider value={{
             currentGroupMembers,
             setCurrentGroupMembers,
@@ -83,6 +83,8 @@ export function UserContextProvider({children}) {
             setSelectedUserId,
             selectedUsername,
             setSelectedUsername,
-        }}>{children}</UserContext.Provider>
+        }}>
+            {children}
+        </UserContext.Provider>
     )
 }

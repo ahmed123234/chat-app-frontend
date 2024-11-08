@@ -7,8 +7,7 @@ import Chat from './Chat';
 function Routes() {
 
     // Grap the informartion from the whole context
-    const {currentUsername, currentUserId} = useContext(UserContext)
-    // console.log("username", username);
+    const {currentUsername} = useContext(UserContext)
 
     if (currentUsername) return <Chat username={currentUsername}/>
   
